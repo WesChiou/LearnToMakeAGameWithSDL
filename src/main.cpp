@@ -3,6 +3,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+const int MAX_FPS = 60;
+const float MS_PRE_FRAME = 1000.0f / MAX_FPS;
+
 int main(int argc, char *args[]) {
 
   // Init SDL
@@ -30,7 +33,7 @@ int main(int argc, char *args[]) {
 
   // Init renderer
 
-  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
   if (!renderer) {
     std::cout << "SDL_CreateRenderer HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
@@ -42,6 +45,8 @@ int main(int argc, char *args[]) {
   bool quit = false;
 
   while (!quit) {
+    Uint64 loop_start = SDL_GetPerformanceCounter();
+
     // Handle events
     SDL_Event event;
 
@@ -65,6 +70,17 @@ int main(int argc, char *args[]) {
 
     // Render (Visible now!)
     SDL_RenderPresent(renderer);
+
+    // Cap to MAX_FPS. And you don't need SDL_RENDERER_PRESENTVSYNC (Used by SDL_CreateRenderer) any more (maybe?).
+    float elapsed_ms = (SDL_GetPerformanceCounter() - loop_start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+    if (elapsed_ms < MS_PRE_FRAME) {
+      SDL_Delay((Uint32)(MS_PRE_FRAME - elapsed_ms));
+    }
+
+    // Calculate real fps
+    float loop_ms = (SDL_GetPerformanceCounter() - loop_start) / (float)SDL_GetPerformanceFrequency();
+    int fps = 1 / loop_ms;
+    std::cout << fps << "\n";
   }
 
   // Clean up and quit
