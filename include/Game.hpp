@@ -3,8 +3,8 @@
 
 #include <SDL2/SDL.h>
 
-const int ROWS = 64;
-const int COLS = 48;
+const int ROWS = 48;
+const int COLS = 64;
 const int CELL_RENDER_SIZE = 10;
 
 int cells[ROWS][COLS] = {0};

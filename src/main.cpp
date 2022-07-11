@@ -5,6 +5,9 @@
 
 #include "Game.hpp"
 
+const int UPDATE_PER_SECOND = 10;
+const int DURATION_PER_UPDATE = 1000 / UPDATE_PER_SECOND;
+
 int main(int argc, char *args[]) {
 
   // Init SDL
@@ -46,6 +49,8 @@ int main(int argc, char *args[]) {
 
   // Main loop
 
+  Uint32 last_update = 0;
+
   bool quit = false;
 
   while (!quit) {
@@ -65,7 +70,11 @@ int main(int argc, char *args[]) {
 
     // And update other game stuff
 
-    updateCells();
+    Uint32 current = SDL_GetTicks();
+    if (current - last_update >= DURATION_PER_UPDATE) {
+      updateCells();
+      last_update = current;
+    }
 
     // Erase the last frame
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
