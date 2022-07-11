@@ -77,12 +77,13 @@ int main(int argc, char *args[]) {
     }
 
     // Erase the last frame
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
     // Draw (Invisible yet!)
 
     renderCells(renderer);
+    drawLines(renderer);
 
     // Render (Visible now!)
     SDL_RenderPresent(renderer);

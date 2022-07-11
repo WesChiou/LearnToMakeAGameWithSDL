@@ -81,13 +81,27 @@ void renderCells(SDL_Renderer* p_renderer) {
       cell_rect.w = CELL_RENDER_SIZE;
       cell_rect.h = CELL_RENDER_SIZE;
 
-      if (cells[i][j]) { // alive cell, fill by white
+      if (cells[i][j]) { // alive cell
+        SDL_SetRenderDrawColor(p_renderer, 128, 0, 0, 255);
+      } else { // dead cell
         SDL_SetRenderDrawColor(p_renderer, 255, 255, 255, 255);
-      } else { // dead cell, fill by dark
-        SDL_SetRenderDrawColor(p_renderer, 0, 0, 0, 255);
       }
 
       SDL_RenderFillRect(p_renderer, &cell_rect);
     }
+  }
+}
+
+void drawLines(SDL_Renderer* p_renderer) {
+  SDL_SetRenderDrawColor(p_renderer, 196, 196, 196, 255);
+
+  for (int row = 0; row < ROWS; ++row) {
+    const int y = row * CELL_RENDER_SIZE;
+    SDL_RenderDrawLine(p_renderer, 0, y, COLS * CELL_RENDER_SIZE, y);
+  }
+
+  for (int col = 0; col < COLS; ++col) {
+    const int x = col * CELL_RENDER_SIZE;
+    SDL_RenderDrawLine(p_renderer, x, 0, x, ROWS * CELL_RENDER_SIZE);
   }
 }
