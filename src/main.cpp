@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "Game.hpp"
+
 int main(int argc, char *args[]) {
 
   // Init SDL
@@ -37,6 +39,11 @@ int main(int argc, char *args[]) {
     return 1;
   }
 
+  // Init game
+
+  initCellsRandom();
+  // printCells();
+
   // Main loop
 
   bool quit = false;
@@ -57,13 +64,16 @@ int main(int argc, char *args[]) {
     }
 
     // And update other game stuff
-    //
+
+    updateCells();
 
     // Erase the last frame
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     // Draw (Invisible yet!)
-    //
+
+    renderCells(renderer);
 
     // Render (Visible now!)
     SDL_RenderPresent(renderer);
