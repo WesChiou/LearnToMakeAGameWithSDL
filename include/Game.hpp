@@ -1,3 +1,6 @@
+#ifndef _INCLUDE_GAME_HPP_
+#define _INCLUDE_GAME_HPP_
+
 #include <iostream>
 #include <time.h>
 
@@ -10,6 +13,8 @@ const int CELL_RENDER_SIZE = 10;
 bool pause = false;
 
 int cells[ROWS][COLS] = {0};
+
+int cell_generations = 0;
 
 // For debug
 void printCells() {
@@ -131,12 +136,12 @@ void renderCells(SDL_Renderer* p_renderer) {
 void drawLines(SDL_Renderer* p_renderer) {
   SDL_SetRenderDrawColor(p_renderer, 196, 196, 196, 255);
 
-  for (int row = 0; row < ROWS; ++row) {
+  for (int row = 0; row <= ROWS; ++row) {
     const int y = row * CELL_RENDER_SIZE;
     SDL_RenderDrawLine(p_renderer, 0, y, COLS * CELL_RENDER_SIZE, y);
   }
 
-  for (int col = 0; col < COLS; ++col) {
+  for (int col = 0; col <= COLS; ++col) {
     const int x = col * CELL_RENDER_SIZE;
     SDL_RenderDrawLine(p_renderer, x, 0, x, ROWS * CELL_RENDER_SIZE);
   }
@@ -175,3 +180,15 @@ void drawHoverCell(SDL_Renderer* p_renderer) {
     SDL_RenderFillRect(p_renderer, &rect);
   }
 }
+
+int countCells() {
+  int count = 0;
+  for (int i = 0; i < ROWS; ++i) {
+    for (int j = 0; j < COLS; ++j) {
+      count += cells[i][j];
+    }
+  }
+  return count;
+}
+
+#endif

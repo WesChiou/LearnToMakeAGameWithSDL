@@ -2,8 +2,10 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "Game.hpp"
+#include "GameInfo.hpp"
 
 const int UPDATE_PER_SECOND = 10;
 const int DURATION_PER_UPDATE = 1000 / UPDATE_PER_SECOND;
@@ -17,14 +19,26 @@ int main(int argc, char *args[]) {
     return 1;
   }
 
+  // Init SDL_ttf
+
+  if (TTF_Init() != 0) {
+    std::cout << "TTF_Init HAS FAILED. ERROR: " << TTF_GetError() << std::endl;
+    return 1;
+  }
+
+  if (!loadFont()) {
+    std::cout << "TTF_OpenFont HAS FAILED. ERROR: " << TTF_GetError() << std::endl;
+    return 1;
+  }
+
   // Init window
 
   SDL_Window* window = SDL_CreateWindow(
-    "SDL Start",
+    "Conway's Game of Life",
     SDL_WINDOWPOS_UNDEFINED,
     SDL_WINDOWPOS_UNDEFINED,
     640,
-    480,
+    520,
     0
   );
 
@@ -123,6 +137,7 @@ int main(int argc, char *args[]) {
       Uint32 current = SDL_GetTicks();
       if (current - last_update >= DURATION_PER_UPDATE) {
         updateCells();
+        cell_generations++;
         last_update = current;
       }
     }
@@ -137,6 +152,7 @@ int main(int argc, char *args[]) {
     drawLines(renderer);
     drawHoverCell(renderer);
     drawSelectedCell(renderer);
+    drawGameInfo(renderer);
 
     // Render (Visible now!)
     SDL_RenderPresent(renderer);
@@ -149,8 +165,10 @@ int main(int argc, char *args[]) {
 
   // Clean up and quit
 
+  cleanupFont();
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(renderer);
+  TTF_Quit();
   SDL_Quit();
 
   return 0;
