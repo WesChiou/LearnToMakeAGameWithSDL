@@ -53,6 +53,8 @@ int main(int argc, char *args[]) {
 
   bool quit = false;
 
+  SDL_StopTextInput(); // !important for unsing SDLK_p to pause
+
   while (!quit) {
     Uint64 loop_start = SDL_GetPerformanceCounter();
 
@@ -63,6 +65,53 @@ int main(int argc, char *args[]) {
       switch (event.type) {
         case SDL_QUIT:
           quit = true;
+          break;
+        case SDL_KEYDOWN:
+          {
+            switch (event.key.keysym.sym) {
+              case SDLK_ESCAPE:
+                quit = true;
+                break;
+              case SDLK_p:
+                pause = !pause;
+                break;
+              case SDLK_SPACE:
+                pause = !pause;
+                break;
+              default:
+                break;
+            }
+          }
+          break;
+        case SDL_MOUSEBUTTONDOWN:
+          {
+            switch (event.button.button) {
+              case SDL_BUTTON_LEFT:
+                {
+                  onLeftMouseDown(&event.button);
+                }
+                break;
+              default:
+                break;
+            }
+          }
+          break;
+        case SDL_MOUSEBUTTONUP:
+          {
+            switch (event.button.button) {
+              case SDL_BUTTON_LEFT:
+                {
+                  onLeftMouseUp(&event.button);
+                }
+                break;
+              default:
+                break;
+            }
+          }
+          break;
+        case SDL_MOUSEMOTION:
+          onMouseMotion(&event.motion);
+          break;
         default:
           break;
       }
@@ -70,10 +119,12 @@ int main(int argc, char *args[]) {
 
     // And update other game stuff
 
-    Uint32 current = SDL_GetTicks();
-    if (current - last_update >= DURATION_PER_UPDATE) {
-      updateCells();
-      last_update = current;
+    if (!pause) {
+      Uint32 current = SDL_GetTicks();
+      if (current - last_update >= DURATION_PER_UPDATE) {
+        updateCells();
+        last_update = current;
+      }
     }
 
     // Erase the last frame
@@ -84,6 +135,8 @@ int main(int argc, char *args[]) {
 
     renderCells(renderer);
     drawLines(renderer);
+    drawHoverCell(renderer);
+    drawSelectedCell(renderer);
 
     // Render (Visible now!)
     SDL_RenderPresent(renderer);

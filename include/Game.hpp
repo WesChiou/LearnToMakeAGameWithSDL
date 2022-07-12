@@ -7,6 +7,8 @@ const int ROWS = 48;
 const int COLS = 64;
 const int CELL_RENDER_SIZE = 10;
 
+bool pause = false;
+
 int cells[ROWS][COLS] = {0};
 
 // For debug
@@ -70,6 +72,40 @@ void updateCells() {
   }
 }
 
+int selected_cell_row = -1;
+int selected_cell_col = -1;
+
+void onLeftMouseDown(SDL_MouseButtonEvent* p_eventbtn) {
+  if (!p_eventbtn || !p_eventbtn->button) return;
+
+  selected_cell_row = p_eventbtn->y / CELL_RENDER_SIZE;
+  selected_cell_col = p_eventbtn->x / CELL_RENDER_SIZE;
+}
+
+void onLeftMouseUp(SDL_MouseButtonEvent* p_eventbtn) {
+  if (!p_eventbtn || !p_eventbtn->button) return;
+
+  int current_selected_cell_row = p_eventbtn->y / CELL_RENDER_SIZE;
+  int current_selected_cell_col = p_eventbtn->x / CELL_RENDER_SIZE;
+
+  // Change selected cell status:
+  if (current_selected_cell_col == selected_cell_col
+    && current_selected_cell_row == selected_cell_row
+  ) {
+    cells[selected_cell_row][selected_cell_col] = (int)!cells[selected_cell_row][selected_cell_col];
+  }
+
+  // reset, !important
+  selected_cell_row = -1;
+  selected_cell_col = -1;
+}
+
+int hover_cell_row = -1;
+int hover_cell_col = -1;
+void onMouseMotion(SDL_MouseMotionEvent* p_motion) {
+  hover_cell_row = p_motion->y / CELL_RENDER_SIZE;
+  hover_cell_col = p_motion->x / CELL_RENDER_SIZE;
+}
 
 SDL_Rect cell_rect;
 
@@ -103,5 +139,39 @@ void drawLines(SDL_Renderer* p_renderer) {
   for (int col = 0; col < COLS; ++col) {
     const int x = col * CELL_RENDER_SIZE;
     SDL_RenderDrawLine(p_renderer, x, 0, x, ROWS * CELL_RENDER_SIZE);
+  }
+}
+
+void drawSelectedCell(SDL_Renderer* p_renderer) {
+  if (selected_cell_col >= 0
+    && selected_cell_col < COLS
+    && selected_cell_row >= 0
+    && selected_cell_row < ROWS
+  ) {
+    SDL_Rect rect;
+    rect.x = selected_cell_col * CELL_RENDER_SIZE;
+    rect.y = selected_cell_row * CELL_RENDER_SIZE;
+    rect.w = CELL_RENDER_SIZE;
+    rect.h = CELL_RENDER_SIZE;
+
+    SDL_SetRenderDrawColor(p_renderer, 128, 0, 0, 255);
+    SDL_RenderFillRect(p_renderer, &rect);
+  }
+}
+
+void drawHoverCell(SDL_Renderer* p_renderer) {
+  if (hover_cell_col >= 0
+    && hover_cell_col < COLS
+    && hover_cell_row >= 0
+    && hover_cell_row < ROWS
+  ) {
+    SDL_Rect rect;
+    rect.x = hover_cell_col * CELL_RENDER_SIZE;
+    rect.y = hover_cell_row * CELL_RENDER_SIZE;
+    rect.w = CELL_RENDER_SIZE;
+    rect.h = CELL_RENDER_SIZE;
+
+    SDL_SetRenderDrawColor(p_renderer, 212, 186, 191, 255);
+    SDL_RenderFillRect(p_renderer, &rect);
   }
 }
