@@ -6,6 +6,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "Utils.hpp"
+
 const int ROWS = 48;
 const int COLS = 64;
 const int CELL_RENDER_SIZE = 10;
@@ -15,16 +17,6 @@ bool pause = false;
 int cells[ROWS][COLS] = {0};
 
 int cell_generations = 0;
-
-// For debug
-void printCells() {
-  for (int i = 0; i < ROWS; ++i) {
-    for (int j = 0; j < COLS; ++j) {
-      std::cout << cells[i][j] << " ";
-    }
-    std::cout << "\n";
-  }
-}
 
 void initCellsRandom() {
   srand(time(0));
@@ -190,5 +182,26 @@ int countCells() {
   }
   return count;
 }
+
+void drawGameInfo(SDL_Renderer* p_renderer, TTF_Font* font) {
+  char cellsCount[10];
+  char generations[10];
+  char time_in_second[10];
+
+  std::string s;
+  s += "Living Cells: ";
+  s += itoa(countCells(), cellsCount, 10);
+  s += "  Generations: ";
+  s += itoa(cell_generations, generations, 10);
+  s += "  Time: ";
+  s += itoa(SDL_GetTicks() / 1000, time_in_second, 10);
+  s += "s    Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
+
+  SDL_Color color = { 0, 0, 0 };
+  Utils::DrawText(p_renderer, s.c_str(), font, 0, 484, color);
+
+  Utils::DrawText(p_renderer, "Conway's Game of Life | Program by Qiu Weishi | weishi@whut.edu.cn", font, 0, 500, color);
+}
+
 
 #endif

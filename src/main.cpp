@@ -1,65 +1,36 @@
 #include <iostream>
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
 
+#include "Window.hpp"
+#include "Font.hpp"
 #include "Game.hpp"
-#include "GameInfo.hpp"
 
 const int UPDATE_PER_SECOND = 10;
 const int DURATION_PER_UPDATE = 1000 / UPDATE_PER_SECOND;
 
 int main(int argc, char *args[]) {
+  // Init window and renderer
 
-  // Init SDL
-
-  if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-    std::cout << "SDL_Init HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
+  Window window = Window();
+  if (!window.Init()) {
     return 1;
   }
+  SDL_Renderer* renderer = window.GetRenderer();
 
   // Init SDL_ttf
 
-  if (TTF_Init() != 0) {
-    std::cout << "TTF_Init HAS FAILED. ERROR: " << TTF_GetError() << std::endl;
+  Font font = Font();
+  if (!font.Init()) {
     return 1;
   }
-
-  if (!loadFont()) {
-    std::cout << "TTF_OpenFont HAS FAILED. ERROR: " << TTF_GetError() << std::endl;
-    return 1;
-  }
-
-  // Init window
-
-  SDL_Window* window = SDL_CreateWindow(
-    "Conway's Game of Life",
-    SDL_WINDOWPOS_UNDEFINED,
-    SDL_WINDOWPOS_UNDEFINED,
-    640,
-    520,
-    0
-  );
-
-  if (!window) {
-    std::cout << "SDL_CreateWindow HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
-    return 1;
-  }
-
-  // Init renderer
-
-  SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
-  if (!renderer) {
-    std::cout << "SDL_CreateRenderer HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
+  if (!font.OpenFont("res/font/Roboto-Regular.ttf", 12)) {
     return 1;
   }
 
   // Init game
 
   initCellsRandom();
-  // printCells();
 
   // Main loop
 
@@ -152,7 +123,7 @@ int main(int argc, char *args[]) {
     drawLines(renderer);
     drawHoverCell(renderer);
     drawSelectedCell(renderer);
-    drawGameInfo(renderer);
+    drawGameInfo(renderer, font.GetFont());
 
     // Render (Visible now!)
     SDL_RenderPresent(renderer);
@@ -165,11 +136,11 @@ int main(int argc, char *args[]) {
 
   // Clean up and quit
 
-  cleanupFont();
-  SDL_DestroyWindow(window);
-  SDL_DestroyRenderer(renderer);
-  TTF_Quit();
-  SDL_Quit();
+  font.Cleanup();
+  font.Quit();
+
+  window.Cleanup();
+  window.Quit();
 
   return 0;
 }
