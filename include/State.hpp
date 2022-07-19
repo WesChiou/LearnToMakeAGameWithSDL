@@ -15,12 +15,6 @@ class State {
     virtual void Draw(Game* game) = 0;
     virtual void Cleanup() = 0;
 
-    // getters
-    bool IsPause() { return pause; };
-    bool IsInvisible() { return invisible; };
-    bool IsSleep() { return sleep; };
-
-  protected:
     bool pause = false; // Update() or not
     bool invisible = false; // Draw() or not
     bool sleep = false; // HandleEvent() or not

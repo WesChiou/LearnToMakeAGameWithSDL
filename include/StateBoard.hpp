@@ -9,6 +9,7 @@
 #include "State.hpp"
 #include "Game.hpp"
 #include "Utils.hpp"
+#include "Events.hpp"
 
 const int MAX_ROWS = 1000;
 const int MAX_COLS = 1000;
@@ -75,6 +76,9 @@ void StateBoard::HandleEvent(SDL_Event* e) {
             break;
           case SDLK_SPACE:
             pause = !pause;
+            break;
+          case SDLK_ESCAPE:
+            Events::TriggerCustomEvent(Events::SHOW_MENU, this);
             break;
           default:
             break;
@@ -177,15 +181,12 @@ void StateBoard::Draw(Game* game) {
   // Draw game info
   char count_s[10];
   char generation_s[10];
-  char time_s[10];
 
   std::string s;
   s += "Living Cells: ";
   s += itoa(LivingCells(), count_s, 10);
   s += "  Generations: ";
   s += itoa(generations, generation_s, 10);
-  s += "  Time: ";
-  s += itoa(SDL_GetTicks() / 1000, time_s, 10);
   s += "s  Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
   SDL_Color color = { 0, 0, 0 };
   Utils::DrawText(renderer, s.c_str(), font, 0, 484, color);

@@ -7,6 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "State.hpp"
+#include "Events.hpp"
 
 class Game {
   public:
@@ -21,10 +22,8 @@ class Game {
     void Quit();
     bool IsRunning();
 
-    void AddState(State* state);
-    // void ChangeState();
-    // void PushState();
-    // void PopState();
+    void PushState(State* state);
+    void PopState();
 
     // getters
     SDL_Window* GetWindow() { return window; };
@@ -61,6 +60,10 @@ bool Game::Init() {
     return false;
   }
 
+  if (!Events::RegisterCustomEvent()) {
+    return false;
+  }
+
   window = SDL_CreateWindow(
     "Conway's Game of Life",
     SDL_WINDOWPOS_UNDEFINED,
@@ -92,14 +95,26 @@ bool Game::Init() {
 void Game::HandleEvents() {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
-    if (e.type == SDL_QUIT) {
+    if (e.type == SDL_QUIT) { // Quit
       Quit();
-      return;
-    }
-
-    for (auto state: states) {
-      if (!state->IsSleep()) {
-        state->HandleEvent(&e);
+    } else if (e.type == Events::CUSTOM_EVENT) { // User custom events
+      switch (e.user.code) {
+        case Events::SHOW_MENU:
+          {
+            std::cout << "TODO: show menu." << std::endl;
+            State* from = (State*)e.user.data1;
+            // from->sleep = true;
+            from->pause = true;
+          }
+          break;
+        default:
+          break;
+      }
+    } else { // Dispatch events to each awake state:
+      for (auto state: states) {
+        if (!state->sleep) {
+          state->HandleEvent(&e);
+        }
       }
     }
   }
@@ -107,7 +122,7 @@ void Game::HandleEvents() {
 
 void Game::Update() {
   for (auto state: states) {
-    if (!state->IsPause()) {
+    if (!state->pause) {
       state->Update();
     }
   }
@@ -119,7 +134,7 @@ void Game::Draw() {
   SDL_RenderClear(renderer);
 
   for (auto state: states) {
-    if (!state->IsInvisible()) {
+    if (!state->invisible) {
       state->Draw(this);
     }
   }
@@ -149,9 +164,16 @@ bool Game::IsRunning() {
   return running;
 }
 
-void Game::AddState(State* state) {
-  state->Init();
+void Game::PushState(State* state) {
   states.push_back(state);
+  state->Init();
+}
+
+void Game::PopState() {
+  if (states.empty()) return;
+
+  states.back()->Cleanup();
+  states.pop_back();
 }
 
 #endif

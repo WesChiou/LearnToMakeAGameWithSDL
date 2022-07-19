@@ -13,7 +13,7 @@ int main(int argc, char *args[]) {
   }
 
   StateBoard board;
-  game.AddState(&board);
+  game.PushState(&board);
 
   while (game.IsRunning()) {
     Uint64 loop_start = SDL_GetPerformanceCounter();
