@@ -7,7 +7,7 @@
 #include "StateMenu.hpp"
 #include "StateBoard.hpp"
 #include "Events.hpp"
-
+#include "TextureManager.hpp"
 #include "Game.hpp"
 
 bool Game::Init() {
@@ -54,6 +54,11 @@ bool Game::Init() {
 
   if (!renderer) {
     std::cout << "SDL_CreateRenderer HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
+    return false;
+  }
+
+  textures = new TextureManager();
+  if (!textures->LoadTexture(renderer, "res/images/icons_01.png")) {
     return false;
   }
 
