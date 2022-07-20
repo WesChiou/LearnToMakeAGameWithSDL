@@ -73,7 +73,7 @@ void StateBoard::HandleEvent(SDL_Event* e) {
 
 void StateBoard::Update() {
   Uint32 current = SDL_GetTicks();
-  const Uint32 per_generation_ms = 1000 / generation_per_second;
+  const Uint32 per_generation_ms = 1000 / speed;
   if (current - lastupdate >= per_generation_ms) {
     lastupdate = current;
 
@@ -134,6 +134,8 @@ void StateBoard::Draw(Game* game) {
     SDL_RenderFillRect(renderer, &dstrect);
   }
 
+  // TODO Draw operation menu
+
   // Draw game info
   char count_s[10];
   char generation_s[10];
@@ -143,7 +145,7 @@ void StateBoard::Draw(Game* game) {
   s += itoa(LivingCells(), count_s, 10);
   s += "  Generations: ";
   s += itoa(generations, generation_s, 10);
-  s += "s  Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
+  s += "Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
   SDL_Color color = { 0, 0, 0 };
   Utils::DrawText(renderer, s.c_str(), font, 0, 484, color);
 

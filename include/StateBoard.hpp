@@ -15,6 +15,12 @@ struct Position {
   int col;
 };
 
+enum Speed {
+  X1 = 4,
+  X4 = 16,
+  X8 = 32,
+};
+
 class StateBoard: public State {
   public:
     // StateBoard();
@@ -34,7 +40,7 @@ class StateBoard: public State {
     int cols = 64;
     int cellsize = 10;
     int generations = 0;
-    int generation_per_second = 10;
+    int speed = X1;
     bool cells[MAX_ROWS][MAX_COLS] = { false };
 
     Position selected_cell = { -1, -1 };
