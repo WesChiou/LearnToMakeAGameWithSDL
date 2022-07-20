@@ -1,36 +1,20 @@
-#ifndef _INCLUDE_EVENTS_HPP
-#define _INCLUDE_EVENTS_HPP
-
-#include <iostream>
+#ifndef _INCLUDE_EVENTS_HPP_
+#define _INCLUDE_EVENTS_HPP_
 
 #include <SDL2/SDL.h>
 
 namespace Events {
-  Uint32 CUSTOM_EVENT;
-
-  bool RegisterCustomEvent() {
-    CUSTOM_EVENT = SDL_RegisterEvents(1);
-
-    if (CUSTOM_EVENT == ((Uint32) - 1)) {
-      std::cout << "SDL_RegisterEvents HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
-      return false;
-    }
-
-    return true;
-  }
+  extern Uint32 CUSTOM_EVENT;
 
   enum CustomEventsCode {
     SHOW_MENU,
+    EXIT_MENU,
+    NEW_GAME,
   };
 
-  void TriggerCustomEvent(CustomEventsCode code, void* data1) {
-    SDL_Event event;
-    event.type = Events::CUSTOM_EVENT;
-    event.user.code = code;
-    event.user.data1 = data1;
+  bool RegisterCustomEvent();
 
-    SDL_PushEvent(&event);
-  }
+  void TriggerCustomEvent(CustomEventsCode code, void* data1);
 }
 
 #endif
