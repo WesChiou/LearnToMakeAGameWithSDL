@@ -33,6 +33,12 @@ bool TextureManager::DrawTexture(
   SDL_Rect* dstrect,
   double scale
 ) {
+  if (!texture_map[filepath]) {
+    // Auto load texture.
+    if (!LoadTexture(renderer, filepath.c_str())) {
+      return false;
+    }
+  }
   if (SDL_RenderCopy(renderer, texture_map[filepath], srcrect, dstrect) != 0) {
     std::cout << "SDL_RenderCopy HAS FAILURE. ERROR: " << SDL_GetError() << std::endl;
     return false;
@@ -43,4 +49,11 @@ bool TextureManager::DrawTexture(
 void TextureManager::FreeTexture(std::string filepath) {
   SDL_DestroyTexture(texture_map[filepath]);
   texture_map.erase(filepath);
+}
+
+void TextureManager::ClearTexture() {
+  for(auto pair: texture_map) {
+    SDL_DestroyTexture(pair.second);
+  }
+  texture_map.clear();
 }

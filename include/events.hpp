@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-namespace Events {
+namespace events {
   extern Uint32 CUSTOM_EVENT;
 
   enum CustomEventsCode {

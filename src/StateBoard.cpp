@@ -6,8 +6,8 @@
 
 #include "State.hpp"
 #include "Game.hpp"
-#include "Utils.hpp"
-#include "Events.hpp"
+#include "utils.hpp"
+#include "events.hpp"
 
 #include "StateBoard.hpp"
 
@@ -34,7 +34,7 @@ void StateBoard::HandleEvent(SDL_Event* e) {
             pause = !pause;
             break;
           case SDLK_ESCAPE:
-            Events::TriggerCustomEvent(Events::SHOW_MENU, this);
+            events::TriggerCustomEvent(events::SHOW_MENU, this);
             break;
           default:
             break;
@@ -147,10 +147,10 @@ void StateBoard::Draw(Game* game) {
   s += itoa(generations, generation_s, 10);
   s += "Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
   SDL_Color color = { 0, 0, 0 };
-  Utils::DrawText(renderer, s.c_str(), font, 0, 484, color);
+  utils::DrawText(renderer, s.c_str(), font, 0, 484, color);
 
   // Draw copyright
-  Utils::DrawText(renderer, "Conway's Game of Life | Program by Qiu Weishi", font, 0, 500, color);
+  utils::DrawText(renderer, "Conway's Game of Life | Program by Qiu Weishi", font, 0, 500, color);
 }
 
 void StateBoard::Cleanup() {

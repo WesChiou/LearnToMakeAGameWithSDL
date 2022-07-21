@@ -3,9 +3,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "Utils.hpp"
+#include "utils.hpp"
 
-bool Utils::DrawText(
+bool utils::DrawText(
   SDL_Renderer* renderer,
   const char* text,
   TTF_Font* font,

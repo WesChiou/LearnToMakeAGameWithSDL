@@ -28,7 +28,7 @@ class Game {
     SDL_Window* GetWindow() { return window; };
     SDL_Renderer* GetRenderer() { return renderer; };
     TTF_Font* GetFont() { return font; };
-    TextureManager* GetTextures() { return textures; };
+    TextureManager* GetTextures() { return texture_manager; };
 
     int fps = 0;
 
@@ -40,7 +40,7 @@ class Game {
     SDL_Window* window;
     SDL_Renderer* renderer;
     TTF_Font* font;
-    TextureManager* textures;
+    TextureManager* texture_manager;
 };
 
 #endif

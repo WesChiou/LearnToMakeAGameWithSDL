@@ -2,11 +2,11 @@
 
 #include <SDL2/SDL.h>
 
-#include "Events.hpp"
+#include "events.hpp"
 
-Uint32 Events::CUSTOM_EVENT;
+Uint32 events::CUSTOM_EVENT;
 
-bool Events::RegisterCustomEvent() {
+bool events::RegisterCustomEvent() {
   CUSTOM_EVENT = SDL_RegisterEvents(1);
 
   if (CUSTOM_EVENT == ((Uint32) - 1)) {
@@ -17,9 +17,9 @@ bool Events::RegisterCustomEvent() {
   return true;
 }
 
-void Events::TriggerCustomEvent(CustomEventsCode code, void* data1) {
+void events::TriggerCustomEvent(CustomEventsCode code, void* data1) {
   SDL_Event event;
-  event.type = Events::CUSTOM_EVENT;
+  event.type = events::CUSTOM_EVENT;
   event.user.code = code;
   event.user.data1 = data1;
 

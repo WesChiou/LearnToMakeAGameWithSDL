@@ -4,8 +4,8 @@
 
 #include "Game.hpp"
 #include "State.hpp"
-#include "Utils.hpp"
-#include "Events.hpp"
+#include "utils.hpp"
+#include "events.hpp"
 #include "StateMenu.hpp"
 
 bool StateMenu::Init() {
@@ -24,7 +24,7 @@ void StateMenu::HandleEvent(SDL_Event* e) {
       {
         switch (e->key.keysym.sym) {
           case SDLK_ESCAPE:
-            Events::TriggerCustomEvent(Events::EXIT_MENU, this);
+            events::TriggerCustomEvent(events::EXIT_MENU, this);
             break;
           default:
             break;
@@ -66,10 +66,10 @@ void StateMenu::Draw(Game* game) {
   SDL_Color color = { 0xFF, 0xFF, 0xFF };
 
   SDL_RenderFillRect(renderer, &back_btn.rect);
-  Utils::DrawText(renderer, back_btn.text.c_str(), font, back_btn.rect.x, back_btn.rect.y, color);
+  utils::DrawText(renderer, back_btn.text.c_str(), font, back_btn.rect.x, back_btn.rect.y, color);
 
   SDL_RenderFillRect(renderer, &newgame_btn.rect);
-  Utils::DrawText(renderer, newgame_btn.text.c_str(), font, newgame_btn.rect.x, newgame_btn.rect.y, color);
+  utils::DrawText(renderer, newgame_btn.text.c_str(), font, newgame_btn.rect.x, newgame_btn.rect.y, color);
 }
 
 void StateMenu::OnLeftMouseDown(SDL_MouseButtonEvent* p_eventbtn) {
@@ -78,12 +78,12 @@ void StateMenu::OnLeftMouseDown(SDL_MouseButtonEvent* p_eventbtn) {
   SDL_Point mouse = { p_eventbtn->x, p_eventbtn->y };
 
   if (SDL_PointInRect(&mouse, &back_btn.rect)) {
-    Events::TriggerCustomEvent(Events::EXIT_MENU, this);
+    events::TriggerCustomEvent(events::EXIT_MENU, this);
     return;
   }
 
   if (SDL_PointInRect(&mouse, &newgame_btn.rect)) {
-    Events::TriggerCustomEvent(Events::NEW_GAME, this);
+    events::TriggerCustomEvent(events::NEW_GAME, this);
     return;
   }
 }

@@ -6,7 +6,7 @@
 #include "State.hpp"
 #include "StateMenu.hpp"
 #include "StateBoard.hpp"
-#include "Events.hpp"
+#include "events.hpp"
 #include "TextureManager.hpp"
 #include "Game.hpp"
 
@@ -28,7 +28,7 @@ bool Game::Init() {
     return false;
   }
 
-  if (!Events::RegisterCustomEvent()) {
+  if (!events::RegisterCustomEvent()) {
     return false;
   }
 
@@ -57,8 +57,8 @@ bool Game::Init() {
     return false;
   }
 
-  textures = new TextureManager();
-  if (!textures->LoadTexture(renderer, "res/images/icons_01.png")) {
+  texture_manager = new TextureManager();
+  if (!texture_manager->LoadTexture(renderer, "res/images/icons_01.png")) {
     return false;
   }
 
@@ -70,9 +70,9 @@ void Game::HandleEvents() {
   while (SDL_PollEvent(&e)) {
     if (e.type == SDL_QUIT) { // Quit
       Quit();
-    } else if (e.type == Events::CUSTOM_EVENT) { // User custom events
+    } else if (e.type == events::CUSTOM_EVENT) { // User custom events
       switch (e.user.code) {
-        case Events::SHOW_MENU:
+        case events::SHOW_MENU:
           {
             State* from = (State*)e.user.data1;
             from->sleep = true;
@@ -82,7 +82,7 @@ void Game::HandleEvents() {
             PushState(menu);
           }
           break;
-        case Events::EXIT_MENU:
+        case events::EXIT_MENU:
           {
             // Exit menu
             PopState();
@@ -92,7 +92,7 @@ void Game::HandleEvents() {
             board->pause = false;
           }
           break;
-        case Events::NEW_GAME:
+        case events::NEW_GAME:
           {
             // Exit menu
             PopState();
@@ -144,6 +144,8 @@ void Game::Cleanup() {
     state->Cleanup();
   }
   states.clear();
+
+  texture_manager->ClearTexture();
 
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(renderer);

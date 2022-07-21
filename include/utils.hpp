@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-namespace Utils {
+namespace utils {
   bool DrawText(
     SDL_Renderer* renderer,
     const char* text,

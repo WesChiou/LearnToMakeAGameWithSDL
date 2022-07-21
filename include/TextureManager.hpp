@@ -23,6 +23,8 @@ class TextureManager {
 
     void FreeTexture(std::string filepath);
 
+    void ClearTexture();
+
   private:
     std::map<std::string, SDL_Texture*> texture_map;
 };
