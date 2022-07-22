@@ -5,14 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 
 namespace utils {
-  bool DrawText(
-    SDL_Renderer* renderer,
-    const char* text,
-    TTF_Font* font,
-    int x,
-    int y,
-    SDL_Color color
-  );
+
 }
 
 #endif

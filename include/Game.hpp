@@ -7,6 +7,7 @@
 
 #include "State.hpp"
 #include "TextureManager.hpp"
+#include "FontManager.hpp"
 
 class Game {
   public:
@@ -27,8 +28,8 @@ class Game {
     // getters
     SDL_Window* GetWindow() { return window; };
     SDL_Renderer* GetRenderer() { return renderer; };
-    TTF_Font* GetFont() { return font; };
-    TextureManager* GetTextures() { return texture_manager; };
+    TextureManager* GetTextureManager() { return texture_manager; };
+    FontManager* GetFontManager() { return font_manager; };
 
     int fps = 0;
 
@@ -39,8 +40,8 @@ class Game {
 
     SDL_Window* window;
     SDL_Renderer* renderer;
-    TTF_Font* font;
     TextureManager* texture_manager;
+    FontManager* font_manager;
 };
 
 #endif

@@ -4,12 +4,20 @@
 
 #include "TextureManager.hpp"
 
-bool TextureManager::LoadTexture(SDL_Renderer* renderer, const char* filepath) {
+bool TextureManager::Init() {
+  if (IMG_Init(IMG_INIT_PNG) == 0) {
+    std::cout << "IMG_Init HAS FAILURE. ERROR: " << SDL_GetError() << std::endl;
+    return false;
+  }
+  return true;
+}
+
+SDL_Texture* TextureManager::LoadTexture(SDL_Renderer* renderer, const char* filepath) {
   SDL_Surface* surface = IMG_Load(filepath);
 
   if (!surface) {
     std::cout << "IMG_Load HAS FAILURE. ERROR: " << SDL_GetError() << std::endl;
-    return false;
+    return nullptr;
   }
 
   SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -18,42 +26,46 @@ bool TextureManager::LoadTexture(SDL_Renderer* renderer, const char* filepath) {
 
   if (!texture) {
     std::cout << "SDL_CreateTextureFromSurface HAS FAILURE. ERROR: " << SDL_GetError() << std::endl;
-    return false;
+    return nullptr;
   }
 
-  texture_map[filepath] = texture;
+  return texture;
+}
 
+bool TextureManager::AddTexture(std::string key, SDL_Texture* texture) {
+  // TODO: validation
+  texture_map[key] = texture;
   return true;
 }
 
 bool TextureManager::DrawTexture(
   SDL_Renderer* renderer,
-  std::string filepath,
+  std::string key,
   SDL_Rect* srcrect,
   SDL_Rect* dstrect,
   double scale
 ) {
-  if (!texture_map[filepath]) {
-    // Auto load texture.
-    if (!LoadTexture(renderer, filepath.c_str())) {
-      return false;
-    }
-  }
-  if (SDL_RenderCopy(renderer, texture_map[filepath], srcrect, dstrect) != 0) {
-    std::cout << "SDL_RenderCopy HAS FAILURE. ERROR: " << SDL_GetError() << std::endl;
+  // TODO: scale
+  if (SDL_RenderCopy(renderer, texture_map[key], srcrect, dstrect) != 0) {
+    std::cout << "DrawTexture HAS FAILURE. ERROR: " << SDL_GetError() << std::endl;
     return false;
   }
   return true;
 }
 
-void TextureManager::FreeTexture(std::string filepath) {
-  SDL_DestroyTexture(texture_map[filepath]);
-  texture_map.erase(filepath);
+void TextureManager::FreeTexture(std::string key) {
+  SDL_DestroyTexture(texture_map[key]);
+  texture_map.erase(key);
 }
 
-void TextureManager::ClearTexture() {
+void TextureManager::Clear() {
   for(auto pair: texture_map) {
     SDL_DestroyTexture(pair.second);
   }
   texture_map.clear();
+}
+
+void TextureManager::Quit() {
+  Clear();
+  IMG_Quit();
 }

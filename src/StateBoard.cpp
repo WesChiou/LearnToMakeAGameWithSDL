@@ -6,7 +6,6 @@
 
 #include "State.hpp"
 #include "Game.hpp"
-#include "utils.hpp"
 #include "events.hpp"
 
 #include "StateBoard.hpp"
@@ -33,6 +32,14 @@ void StateBoard::HandleEvent(SDL_Event* e) {
           case SDLK_SPACE:
             pause = !pause;
             break;
+          default:
+            break;
+        }
+      }
+      break;
+    case SDL_KEYUP:
+      {
+        switch (e->key.keysym.sym) {
           case SDLK_ESCAPE:
             events::TriggerCustomEvent(events::SHOW_MENU, this);
             break;
@@ -84,7 +91,7 @@ void StateBoard::Update() {
 
 void StateBoard::Draw(Game* game) {
   SDL_Renderer* renderer = game->GetRenderer();
-  TTF_Font* font = game->GetFont();
+
   // Draw cells
   SDL_Rect dstrect;
   for (int i = 0; i < rows; ++i) {
@@ -145,12 +152,13 @@ void StateBoard::Draw(Game* game) {
   s += itoa(LivingCells(), count_s, 10);
   s += "  Generations: ";
   s += itoa(generations, generation_s, 10);
-  s += "Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
+  s += " Tips: Left Click to add or kill a cell;  Use SPACE or P to pause.";
   SDL_Color color = { 0, 0, 0 };
-  utils::DrawText(renderer, s.c_str(), font, 0, 484, color);
+  game->GetFontManager()->DrawTextImmediately(renderer, "Roboto-Regular", s.c_str(), 0, 484, color);
 
   // Draw copyright
-  utils::DrawText(renderer, "Conway's Game of Life | Program by Qiu Weishi", font, 0, 500, color);
+  std::string copyright = "Conway's Game of Life | Program by Qiu Weishi";
+  game->GetFontManager()->DrawTextImmediately(renderer, "Roboto-Regular", copyright, 0, 500, color);
 }
 
 void StateBoard::Cleanup() {

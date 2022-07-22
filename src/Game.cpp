@@ -8,30 +8,17 @@
 #include "StateBoard.hpp"
 #include "events.hpp"
 #include "TextureManager.hpp"
+#include "FontManager.hpp"
 #include "Game.hpp"
 
 bool Game::Init() {
+  // Init SDL
   if (SDL_Init(SDL_INIT_VIDEO) != 0) {
     std::cout << "SDL_Init HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
     return false;
   }
 
-  if (TTF_Init() != 0) {
-    std::cout << "TTF_Init HAS FAILED. ERROR: " << TTF_GetError() << std::endl;
-    return false;
-  }
-
-  font = TTF_OpenFont("res/font/Roboto-Regular.ttf", 12);
-
-  if (!font) {
-    std::cout << "TTF_OpenFont HAS FAILED. ERROR: " << TTF_GetError() << std::endl;
-    return false;
-  }
-
-  if (!events::RegisterCustomEvent()) {
-    return false;
-  }
-
+  // Init window
   window = SDL_CreateWindow(
     "Conway's Game of Life",
     SDL_WINDOWPOS_UNDEFINED,
@@ -40,25 +27,36 @@ bool Game::Init() {
     520,
     0
   );
-
   if (!window) {
     std::cout << "SDL_CreateWindow HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
     return false;
   }
 
-  renderer = SDL_CreateRenderer(
-    window,
-    -1,
-    SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-  );
-
+  // Init renderer
+  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
   if (!renderer) {
     std::cout << "SDL_CreateRenderer HAS FAILED. ERROR: " << SDL_GetError() << std::endl;
     return false;
   }
 
+  // Init TextureManager
   texture_manager = new TextureManager();
-  if (!texture_manager->LoadTexture(renderer, "res/images/icons_01.png")) {
+  if (!texture_manager->Init()) {
+    return false;
+  }
+
+  // Init FontManager and load a font
+  font_manager = new FontManager();
+  if (!font_manager->Init()) {
+    return false;
+  }
+  TTF_Font* font_tmp = font_manager->LoadFont("res/font/Roboto-Regular.ttf", 12);
+  if (!font_tmp) {
+    return false;
+  }
+  font_manager->AddFont("Roboto-Regular", font_tmp);
+
+  if (!events::RegisterCustomEvent()) {
     return false;
   }
 
@@ -145,12 +143,12 @@ void Game::Cleanup() {
   }
   states.clear();
 
-  texture_manager->ClearTexture();
+  texture_manager->Quit();
+  font_manager->Quit();
 
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(renderer);
-  TTF_CloseFont(font);
-  TTF_Quit();
+
   SDL_Quit();
 }
 

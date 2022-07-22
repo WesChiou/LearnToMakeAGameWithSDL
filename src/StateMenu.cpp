@@ -4,7 +4,6 @@
 
 #include "Game.hpp"
 #include "State.hpp"
-#include "utils.hpp"
 #include "events.hpp"
 #include "StateMenu.hpp"
 
@@ -20,7 +19,7 @@ bool StateMenu::Init() {
 
 void StateMenu::HandleEvent(SDL_Event* e) {
   switch (e->type) {
-    case SDL_KEYDOWN:
+    case SDL_KEYUP:
       {
         switch (e->key.keysym.sym) {
           case SDLK_ESCAPE:
@@ -53,7 +52,6 @@ void StateMenu::Update() {
 
 void StateMenu::Draw(Game* game) {
   SDL_Renderer* renderer = game->GetRenderer();
-  TTF_Font* font = game->GetFont();
 
   // Draw menu box
   SDL_SetRenderDrawColor(renderer, 172, 196, 208, 255);
@@ -66,10 +64,24 @@ void StateMenu::Draw(Game* game) {
   SDL_Color color = { 0xFF, 0xFF, 0xFF };
 
   SDL_RenderFillRect(renderer, &back_btn.rect);
-  utils::DrawText(renderer, back_btn.text.c_str(), font, back_btn.rect.x, back_btn.rect.y, color);
+  game->GetFontManager()->DrawTextImmediately(
+    renderer,
+    "Roboto-Regular",
+    back_btn.text.c_str(),
+    back_btn.rect.x,
+    back_btn.rect.y,
+    color
+  );
 
   SDL_RenderFillRect(renderer, &newgame_btn.rect);
-  utils::DrawText(renderer, newgame_btn.text.c_str(), font, newgame_btn.rect.x, newgame_btn.rect.y, color);
+  game->GetFontManager()->DrawTextImmediately(
+    renderer,
+    "Roboto-Regular",
+    newgame_btn.text.c_str(),
+    newgame_btn.rect.x,
+    newgame_btn.rect.y,
+    color
+  );
 }
 
 void StateMenu::OnLeftMouseDown(SDL_MouseButtonEvent* p_eventbtn) {

@@ -11,19 +11,25 @@ class TextureManager {
     // TextureManager();
     // ~TextureManager();
 
-    bool LoadTexture(SDL_Renderer* renderer, const char* filepath);
+    bool Init();
+
+    SDL_Texture* LoadTexture(SDL_Renderer* renderer, const char* filepath);
+
+    bool AddTexture(std::string key, SDL_Texture* texture);
 
     bool DrawTexture(
       SDL_Renderer* renderer,
-      std::string filepath,
+      std::string key,
       SDL_Rect* srcrect,
       SDL_Rect* dstrect,
-      double scale
+      double scale = 1
     );
 
-    void FreeTexture(std::string filepath);
+    void FreeTexture(std::string key);
 
-    void ClearTexture();
+    void Clear();
+
+    void Quit();
 
   private:
     std::map<std::string, SDL_Texture*> texture_map;
